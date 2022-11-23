@@ -15,6 +15,8 @@ To use the YoloV4 that has been trained, you can download the model provided at 
 
 2. [yolo-license-plate-detection](https://github.com/alitourani/yolo-license-plate-detection)
 
+3. [Example for virtualenvironment](https://www.ntweekly.com/2021/04/14/create-a-python-3-9-virtual-environment-ubuntu)
+
 ## How to installation
 
 To run this program, follow the step by step commands below:
@@ -28,14 +30,12 @@ To run this program, follow the step by step commands below:
     ``` $ cd V-Plate_detection```
   
   - Create virtual environment
-  
-    ``` [ex](https://www.ntweekly.com/2021/04/14/create-a-python-3-9-virtual-environment-ubuntu/). python3.9 -m venv python-3.9```
-  
-    ``` $ virtualenv venv```
+
+    ``` $ python3.9 -m venv python-3.9```
   
   - Change directory virtual environment
   
-    ``` $ source venv/bin/activate```
+    ``` $ source python3.9/bin/activate```
     
   - Installation requirements
   
