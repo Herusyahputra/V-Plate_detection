@@ -25,7 +25,7 @@ To run this program, follow the step by step commands below:
   
     ```$ git clone https://github.com/Herusyahputra/V-Plate_detection.git```
   
-  - Change directory 
+  - Change directory.
   
     ``` $ cd V-Plate_detection```
   
