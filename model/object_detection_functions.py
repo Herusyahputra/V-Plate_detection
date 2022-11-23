@@ -30,7 +30,7 @@ def object_detection_analysis_with_nms(test_img, class_labels, class_colors, obj
 			if prediction_confidence > score_threshold:
 				# get the predicted label
 				predicted_class_label = class_labels[predicted_class_id]
-				# compute the bounding box cooridnates scaled for the input image
+				# compute the bounding box coordinates scaled for the input image
 				bounding_box = object_detection[0:4] * np.array([img_width, img_height, img_width, img_height])
 				(box_center_x_pt, box_center_y_pt, box_width, box_height) = bounding_box.astype("int")
 				start_x_pt = max(0, int(box_center_x_pt - (box_width / 2)))
@@ -46,7 +46,7 @@ def object_detection_analysis_with_nms(test_img, class_labels, class_colors, obj
 	# NMS for a set of overlapping bboxes returns the ID of the one with highest 
 	# confidence score while suppressing all others (non maxima)
 	# - score_threshold: a threshold used to filter boxes by score 
-	# - nms_threshold: a threshold used in non maximum suppression.
+	# - nms_threshold: a threshold used in non-maximum suppression.
 	winner_ids = cv2.dnn.NMSBoxes(boxes_list, confidences_list, score_threshold, nms_threshold)
 
 	# create a list of winner boxes
@@ -78,13 +78,13 @@ def object_detection_analysis_with_nms(test_img, class_labels, class_colors, obj
 		box_color = [int(c) for c in box_color]
 
 		# print the prediction in console
-		predicted_class_label = "{}: {:.2f}%".format(prediction_scores, prediction_confidence * 100)
+		predicted_class_label = "{}: {:.2f}%".format(predicted_class_label, prediction_confidence * 100)
 		print("predicted plate {}".format(predicted_class_label))
-		print("predicted plate 2222222 {}".format(prediction_confidence * 100))
+		print("predicted plate {}".format(prediction_confidence * 100))
 
 		# draw rectangle and text in the image
-		cv2.rectangle(result, (start_x_pt, start_y_pt), (end_x_pt, end_y_pt), box_color, 3)
-		cv2.putText(result, predicted_class_label, (start_x_pt, start_y_pt-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, box_color, 2)
+		cv2.rectangle(result, (start_x_pt, start_y_pt), (end_x_pt, end_y_pt), box_color, 10)
+		cv2.putText(result, predicted_class_label, (start_x_pt, start_y_pt-5), cv2.FONT_HERSHEY_SIMPLEX, 3, box_color, 2)
 
 	return result, winner_box_list, prediction_confidence
 

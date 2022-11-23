@@ -8,17 +8,17 @@ class Yolo_config(object):
         super(Yolo_config, self).__init__()
         self.parent = parent
 
-        self.class_labels_path = "./backend/custom.names"
+        self.class_labels_path = "./backend/coco.names"
         self.class_labels_path = "./backend/coco.names"
         self.class_labels = open(self.class_labels_path).read().strip().split("\n")
         self.class_colors = np.random.randint(0, 255, size=(len(self.class_labels), 4), dtype="uint8")
 
-        # for the image2blob conversion
+        # for the image 2blob conversion
         self.scalefactor = 1.0 / 255.0
-        self.new_size = (416, 416)
+        self.new_size = (316, 316)
 
         # for the NMS
-        self.score_threshold = 0.5
+        self.score_threshold = 0.4
         self.nms_threshold = 0.4
 
         # Load model

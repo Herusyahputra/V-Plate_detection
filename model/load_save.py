@@ -57,7 +57,7 @@ class Load_save(object):
             self.parent.val_alpha_out.setValue(data["alpha_outside"])
             self.parent.val_beta_out.setValue(data["beta_outside"])
             self.parent.val_zoom_out.setValue(data["zoom_outside"])
-            self.parent.unblockSignalsFront()
+            self.parent.unblockSignals()
 
         except:
             print("no parameter")
