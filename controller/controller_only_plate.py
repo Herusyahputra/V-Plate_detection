@@ -92,8 +92,8 @@ class controller(Ui_MainWindow):
         self.val_alpha_in.valueChanged.connect(self.valueChange_inside)
         self.val_beta_in.valueChanged.connect(self.valueChange_inside)
         self.val_zoom_in.valueChanged.connect(self.valueChange_inside)
-        self.rotate_in.valueChanged.connect(self.anypoint_zone_1)
-        self.rotate_out.valueChanged.connect(self.anypoint_zone_2)
+        self.rotate_in.valueChanged.connect(self.anypoint_inside())
+        self.rotate_out.valueChanged.connect(self.anypoint_outside())
 
         # Setting parameters for create anypoint maps inside
         self.val_alpha_out.valueChanged.connect(self.valueChange_outside)
@@ -110,8 +110,8 @@ class controller(Ui_MainWindow):
         self.valueChange_inside()
         self.valueChange_outside()
         self.normal_fisheye()
-        self.anypoint_zone_1()
-        self.anypoint_zone_2()
+        self.anypoint_inside()
+        self.anypoint_outside()
         self.next_frame()
         self.show_image()
 
@@ -137,8 +137,8 @@ class controller(Ui_MainWindow):
                 start = time.time()
                 self.timer.start()
                 self.normal_fisheye()
-                self.anypoint_zone_1()
-                self.anypoint_zone_2()
+                self.anypoint_inside()
+                self.anypoint_outside()
                 self.show_image()
                 print("process streaming")
                 end = time.time()
@@ -170,8 +170,8 @@ class controller(Ui_MainWindow):
                 self.data_properties.properties_video["video"] = True
                 self.timer.start()
                 self.normal_fisheye()
-                self.anypoint_zone_1()
-                self.anypoint_zone_2()
+                self.anypoint_inside()
+                self.anypoint_outside()
                 self.show_image()
 
     def save_to_record(self):
@@ -426,8 +426,7 @@ class controller(Ui_MainWindow):
                     self.anypoint_outside()
                     self.show_image()
                 if self.radioButton_outside.isChecked():
-
-                    alpha, beta = self.moildev_out.get_alpha_beta(icx_front, icy_front, mode)
+                    alpha, beta = self.moildev_out.get_alpha_beta(icx_front, icy_front, mode=2)
                     self.blockSignals()
                     self.val_alpha_out.setValue(alpha)
                     self.val_beta_out.setValue(beta)
@@ -481,6 +480,71 @@ class controller(Ui_MainWindow):
                     self.anypoint_in_draw = self.anypoint_in.copy()
 
                 self.show_image_anypoint_draw()
+
+    def mouse_event_image_anypoint_out(self, e):
+        print("click anypoint out")
+        if e.button() == Qt.MouseButton.LeftButton:
+            pos_x = round(e.position().x())
+            pos_y = round(e.position().y())
+            if self.image is None:
+                print("no image")
+            else:
+                ratio_x, ratio_y = MoilUtils.ratio_image_to_label(self.wind_outsid_image, self.anypoint_out_draw)
+                icx_front = round(pos_x * ratio_x)
+                icy_front = round(pos_y * ratio_y)
+                coor = [icx_front, icy_front]
+
+                if len(self.point_out) <= 4:
+                    self.point_out.append(coor)
+
+                for i, value in enumerate(self.point_out):
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    org = self.point_out[i]
+                    fontScale = 2
+                    color = (255, 0, 0)
+                    thickness = 5
+                    self.anypoint_out_draw = cv2.putText(self.anypoint_out_draw, str(i + 1), (org[0], org[1]), font,
+                                                        fontScale,
+                                                        color, thickness, cv2.LINE_AA)
+                    cv2.circle(self.anypoint_out_draw, (org[0], org[1]), 15, (0, 0, 255), -1)
+
+                if len(self.point_out) == 4:
+                    self.image_click_plate_zone2 = self.perspective_out(self.anypoint_out)
+                    cv2.imwrite("image_out.jpg", self.image_click_plate_zone2)
+
+                if len(self.point_out) > 4:
+                    self.point_out = []
+                    self.anypoint_out_draw = self.anypoint_out.copy()
+
+                self.show_image_anypoint_draw_out()
+
+    def perspective_in(self, image):
+        # define four points on input image
+        pts1 = np.float32(self.point_in)
+        print("ok, test click perspective")
+
+        # define the corresponding four points on output image
+        pts2 = np.float32([[0, 0], [200, 0], [0, 100], [200, 100]])
+
+        # get the perspective transform matrix
+        M = cv2.getPerspectiveTransform(pts1, pts2)
+
+        # transform the image using perspective transform matrix
+        return cv2.warpPerspective(image, M, (200, 100))
+
+    def perspective_out(self, image):
+        # define four points on input image
+        pts1 = np.float32(self.point_out)
+        print("ok, test click perspective")
+
+        # define the corresponding four points on output image
+        pts2 = np.float32([[0, 0], [200, 0], [0, 100], [200, 100]])
+
+        # get the perspective transform matrix
+        M = cv2.getPerspectiveTransform(pts1, pts2)
+
+        # transform the image using perspective transform matrix
+        return cv2.warpPerspective(image, M, (200, 100))
 
     def rotate_value_in(self, image):
         rotate = self.rotate_in.value()
