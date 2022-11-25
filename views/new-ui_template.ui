@@ -284,6 +284,23 @@ background-color: #5E4404;</string>
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="btn_save_setting">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>27</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(255, 255, 255);
+background-color: #5E4404;</string>
+                  </property>
+                  <property name="text">
+                   <string>Save Params</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="Line" name="line">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
