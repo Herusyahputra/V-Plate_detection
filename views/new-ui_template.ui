@@ -317,7 +317,7 @@ background-color: #5E4404;</string>
                    </size>
                   </property>
                   <property name="text">
-                   <string>Inside</string>
+                   <string>Zone 1</string>
                   </property>
                  </widget>
                 </item>
@@ -336,7 +336,7 @@ background-color: #5E4404;</string>
                    </size>
                   </property>
                   <property name="text">
-                   <string>Outside</string>
+                   <string>Zone 2</string>
                   </property>
                  </widget>
                 </item>
@@ -685,7 +685,7 @@ background-color: #104F6A; </string>
                <enum>QFrame::Panel</enum>
               </property>
               <property name="text">
-               <string>Inside</string>
+               <string>Zone 1</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -747,6 +747,60 @@ background-color: #104F6A; </string>
                 </rect>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <widget class="QRadioButton" name="mode_1_in">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Mode 1</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="mode_2_in">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Mode 2</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_2">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <widget class="QLabel" name="label_20">
                   <property name="sizePolicy">
@@ -1291,7 +1345,7 @@ background-color: #104F6A; </string>
                <enum>QFrame::Panel</enum>
               </property>
               <property name="text">
-               <string>Outside</string>
+               <string>Zone 2</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -1350,6 +1404,60 @@ background-color: #104F6A; </string>
                 </rect>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_18">
+                <item>
+                 <widget class="QRadioButton" name="mode_1_out">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Mode 1</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="mode_2_out">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>70</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Mode 2</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="Line" name="line_16">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                 </widget>
+                </item>
                 <item>
                  <widget class="QLabel" name="label_26">
                   <property name="sizePolicy">
