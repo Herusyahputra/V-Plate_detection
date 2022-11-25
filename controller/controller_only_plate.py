@@ -75,6 +75,7 @@ class controller(Ui_MainWindow):
         self.btn_record.clicked.connect(self.save_to_record)
         self.btn_save_img_inside.clicked.connect(self.save_image_inside)
         self.btn_save_img_outside.clicked.connect(self.save_image_outside)
+        self.btn_save_setting.clicked.connect(self.Load_Save.save_param)
 
         # Operation for video player
         self.btn_play_pouse_3.clicked.connect(self.onclick_play_video)
@@ -149,6 +150,7 @@ class controller(Ui_MainWindow):
                 end = time.time()
                 seconds = end - start
                 print("time:{}".format(seconds))
+
 
     def get_value_slider_video(self, value):
         current_position = self.data_properties.properties_video["pos_frame"] * (value + 1) / \
@@ -561,6 +563,7 @@ class controller(Ui_MainWindow):
 
                 self.show_image_anypoint_draw_out()
 
+    # start aji guide source-code
     def perspective_in(self, image):
         # define four points on input image
         pts1 = np.float32(self.point_in)
