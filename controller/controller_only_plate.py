@@ -151,6 +151,16 @@ class controller(Ui_MainWindow):
                 seconds = end - start
                 print("time:{}".format(seconds))
 
+        # start anto guide source-code
+        else:
+            start = time.time()
+            self.timer.start()
+            self.show_image()
+            print("process image")
+            end = time.time()
+            seconds = end - start
+            print("image mode, time:{}".format(seconds))
+
 
     def get_value_slider_video(self, value):
         current_position = self.data_properties.properties_video["pos_frame"] * (value + 1) / \
