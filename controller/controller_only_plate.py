@@ -86,11 +86,14 @@ class controller(Ui_MainWindow):
         # Output for original image
         self.original_fisheye.mousePressEvent = self.mouse_event_image_source
         self.wind_inside_image.mousePressEvent = self.mouse_event_image_anypoint
+        self.wind_outsid_image.mousePressEvent = self.mouse_event_image_anypoint_out
 
         # Setting parameters for create anypoint maps inside
         self.val_alpha_in.valueChanged.connect(self.valueChange_inside)
         self.val_beta_in.valueChanged.connect(self.valueChange_inside)
         self.val_zoom_in.valueChanged.connect(self.valueChange_inside)
+        self.rotate_in.valueChanged.connect(self.anypoint_zone_1)
+        self.rotate_out.valueChanged.connect(self.anypoint_zone_2)
 
         # Setting parameters for create anypoint maps inside
         self.val_alpha_out.valueChanged.connect(self.valueChange_outside)
@@ -141,6 +144,7 @@ class controller(Ui_MainWindow):
                 end = time.time()
                 seconds = end - start
                 print("time:{}".format(seconds))
+
 
     def get_value_slider_video(self, value):
         current_position = self.data_properties.properties_video["pos_frame"] * (value + 1) / \
@@ -226,6 +230,7 @@ class controller(Ui_MainWindow):
         print("anypoint zone 1")
         # self.anypoint_in = self.image
         self.anypoint_in = MoilUtils.remap(self.image, self.maps_x_in, self.maps_y_in)
+        self.anypoint_in = self.rotate_value_in(self.anypoint_in)
         # print("rotate in: {}". format(self.anypoint_in))
         cv2.imwrite("./images/anypoint_inside/image.jpg", self.anypoint_in)
         self.anypoint_in_draw, self.position_in, self.prediction_confidence = self.yolo_config.detect_using_yolo(
@@ -272,8 +277,6 @@ class controller(Ui_MainWindow):
         # if self.position_in is not None:
         # MoilUtils.showImageToLabel(self.original_fisheye, self.anypoint_in_draw, 600)
         MoilUtils.showImageToLabel(self.wind_inside_image, self.anypoint_in_draw, 600)
-        if self.image_click_plate is not None:
-            MoilUtils.showImageToLabel(self.wind_detected_in_m, self.image_click_plate, 200)
 
     def anypoint_outside(self):
         print("anypoint zone 2")
@@ -321,8 +324,6 @@ class controller(Ui_MainWindow):
 
     def show_image_anypoint_draw_out(self):
         MoilUtils.showImageToLabel(self.wind_outsid_image, self.anypoint_out_draw, 600)
-        if self.image_click_plate_zone2 is not None:
-            MoilUtils.showImageToLabel(self.wind_detected_out_m, self.image_click_plate_zone2, 200)
 
     def createAlphaBeta(self, x, y):
         alpha, beta, = self.moildev_in.get_alpha_beta(x, y, mode=2)
@@ -383,16 +384,22 @@ class controller(Ui_MainWindow):
         self.maps_x_in, self.maps_y_in = self.moildev_in.maps_anypoint(alpha, beta, zoom, mode=2)
         self.x_in, self.y_in, self.center_fish, self.width, self.height = self.CenterGravity(self.maps_x_in,
                                                                                              self.maps_y_in)
+        self.anypoint_inside()
+        if self.maps_x_in is not None and self.maps_x_out is not None:
+            self.show_image()
 
     def valueChange_outside(self):
         alpha = self.val_alpha_out.value()
         beta = self.val_beta_out.value()
         zoom = self.val_zoom_out.value()
 
-
         self.maps_x_out, self.maps_y_out = self.moildev_out.maps_anypoint(alpha, beta, zoom, mode=2)
         self.x_out, self.y_out, self.center_fish, self.width, self.height = self.CenterGravity(self.maps_x_out,
                                                                                                self.maps_y_out)
+
+        self.anypoint_outside()
+        if self.maps_x_in is not None and self.maps_x_out is not None:
+            self.show_image()
 
     def mouse_event_image_source(self, e):
         print("click even normal fisheye")
@@ -419,9 +426,8 @@ class controller(Ui_MainWindow):
                     self.anypoint_outside()
                     self.show_image()
                 if self.radioButton_outside.isChecked():
-                    print("outside")
 
-                    alpha, beta = self.moildev_out.get_alpha_beta(icx_front, icy_front, mode=2)
+                    alpha, beta = self.moildev_out.get_alpha_beta(icx_front, icy_front, mode)
                     self.blockSignals()
                     self.val_alpha_out.setValue(alpha)
                     self.val_beta_out.setValue(beta)
@@ -475,6 +481,30 @@ class controller(Ui_MainWindow):
                     self.anypoint_in_draw = self.anypoint_in.copy()
 
                 self.show_image_anypoint_draw()
+
+    def rotate_value_in(self, image):
+        rotate = self.rotate_in.value()
+        height, width = image.shape[:2]
+        # get the center coordinates of the image to create the 2D rotation matrix
+        center = (width / 2, height / 2)
+
+        # using cv2.getRotationMatrix2D() to get the rotation matrix
+        rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
+
+        # rotate the image using cv2.warpAffine
+        return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
+
+    def rotate_value_out(self, image):
+        rotate = self.rotate_out.value()
+        height, width = image.shape[:2]
+        # get the center coordinates of the image to create the 2D rotation matrix
+        center = (width / 2, height / 2)
+
+        # using cv2.getRotationMatrix2D() to get the rotation matrix
+        rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
+
+        # rotate the image using cv2.warpAffine
+        return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
 
     def onclick_play_video(self):
         if self.image is not None:
