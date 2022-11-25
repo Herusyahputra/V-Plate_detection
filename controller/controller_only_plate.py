@@ -75,7 +75,6 @@ class controller(Ui_MainWindow):
         self.btn_record.clicked.connect(self.save_to_record)
         self.btn_save_img_inside.clicked.connect(self.save_image_inside)
         self.btn_save_img_outside.clicked.connect(self.save_image_outside)
-        self.btn_save_setting.clicked.connect(self.Load_Save.save_param)
 
         # Operation for video player
         self.btn_play_pouse_3.clicked.connect(self.onclick_play_video)
@@ -87,19 +86,11 @@ class controller(Ui_MainWindow):
         # Output for original image
         self.original_fisheye.mousePressEvent = self.mouse_event_image_source
         self.wind_inside_image.mousePressEvent = self.mouse_event_image_anypoint
-        self.wind_outsid_image.mousePressEvent = self.mouse_event_image_anypoint_out
 
         # Setting parameters for create anypoint maps inside
         self.val_alpha_in.valueChanged.connect(self.valueChange_inside)
         self.val_beta_in.valueChanged.connect(self.valueChange_inside)
         self.val_zoom_in.valueChanged.connect(self.valueChange_inside)
-        self.rotate_in.valueChanged.connect(self.anypoint_zone_1)
-        self.rotate_out.valueChanged.connect(self.anypoint_zone_2)
-
-        self.mode_1_in.toggled.connect(self.valueChange_inside)
-        self.mode_2_in.toggled.connect(self.valueChange_inside)
-        self.mode_1_out.toggled.connect(self.valueChange_outside)
-        self.mode_2_out.toggled.connect(self.valueChange_outside)
 
         # Setting parameters for create anypoint maps inside
         self.val_alpha_out.valueChanged.connect(self.valueChange_outside)
@@ -150,14 +141,6 @@ class controller(Ui_MainWindow):
                 end = time.time()
                 seconds = end - start
                 print("time:{}".format(seconds))
-        else:
-            start = time.time()
-            self.timer.start()
-            self.show_image()
-            print("process image")
-            end = time.time()
-            seconds = end - start
-            print("image mode, time:{}".format(seconds))
 
     def get_value_slider_video(self, value):
         current_position = self.data_properties.properties_video["pos_frame"] * (value + 1) / \
@@ -217,21 +200,21 @@ class controller(Ui_MainWindow):
         self.prediction_ori.setText(str(round(self.prediction_confidence * 100, 2)) + " %")
 
         if self.position_ori is not None:
-            frame_ori = self.crop_image_detected(self.original_image, self.position_ori)
-            # center_position_obj = self.position_ori[0][0] + self.position_ori[0][2] / 2, self.position_ori[0][1] + \
-            #                       self.position_ori[0][3] / 2
-            # print(self.center_fish, self.width, self.height)
-            #
-            # real_distance_w = self.width * center_position_obj[0] / self.original_image.shape[1]
-            # real_distance_h = self.height * center_position_obj[1] / self.original_image.shape[0]
-            #
+            frame_ori = self.crop_image_detected(self.ori_fisheye, self.position_ori)
+            center_position_obj = self.position_ori[0][0] + self.position_ori[0][2] / 2, self.position_ori[0][1] + \
+                                  self.position_ori[0][3] / 2
+            print(self.center_fish, self.width, self.height)
+
+            real_distance_w = self.width * center_position_obj[0] / self.ori_fisheye.shape[1]
+            real_distance_h = self.height * center_position_obj[1] / self.ori_fisheye.shape[0]
+
             # cv2.circle(self.anypoint_ori_draw, (int(center_position_obj[0]), int(center_position_obj[1])),
             #            15, (0, 0, 255), -1)
             # cv2.circle(self.image,
             #            (int(self.center_fish[0][0]), int(self.center_fish[0][1])),
             #            15, (0, 0, 255), -1)
-            #
-            # self.createAlphaBeta(int(self.x_ori + real_distance_w), int(self.y_in + real_distance_h))
+
+            self.createAlphaBeta(int(self.x_in + real_distance_w), int(self.y_in + real_distance_h))
             MoilUtils.showImageToLabel(self.repository, frame_ori, 300)
 
         else:
@@ -239,15 +222,12 @@ class controller(Ui_MainWindow):
 
         MoilUtils.showImageToLabel(self.original_fisheye, self.anypoint_ori_draw, 600)
 
-    def anypoint_zone_1(self):
+    def anypoint_inside(self):
         print("anypoint zone 1")
         # self.anypoint_in = self.image
         self.anypoint_in = MoilUtils.remap(self.image, self.maps_x_in, self.maps_y_in)
-        self.anypoint_in = self.rotate_value_in(self.anypoint_in)
         # print("rotate in: {}". format(self.anypoint_in))
-        #### begin, thank you
         cv2.imwrite("./images/anypoint_inside/image.jpg", self.anypoint_in)
-        #### end
         self.anypoint_in_draw, self.position_in, self.prediction_confidence = self.yolo_config.detect_using_yolo(
             self.anypoint_in)
 
@@ -258,11 +238,7 @@ class controller(Ui_MainWindow):
         # self.num_detect_ori.setText(str(self.num_in))
         print(type(self.prediction_confidence))
 
-        # recognition
-        # self.plat_num = self.recognition.recognition_character(self.anypoint_in)
-        # self.num_detect_ori.setText(str(self.plat_num))
         self.prediction_in.setText(str(round(self.prediction_confidence * 100, 2)) + " %")
-        # self.prediction_ori.setText(str(round(self.prediction_confidence * 100, 2)) + " %")
 
         if self.position_in is not None:
             frame_in = self.crop_image_detected(self.anypoint_in, self.position_in)
@@ -274,9 +250,9 @@ class controller(Ui_MainWindow):
             real_distance_h = self.height * center_position_obj[1] / self.anypoint_in.shape[0]
             cv2.circle(self.anypoint_in_draw, (int(center_position_obj[0]), int(center_position_obj[1])),
                        15, (0, 0, 255), -1)
-            cv2.circle(self.image,
-                       (int(self.center_fish[0][0]), int(self.center_fish[0][1])),
-                       15, (0, 0, 255), -1)
+            # cv2.circle(self.image,
+            #            (int(self.center_fish[0][0]), int(self.center_fish[0][1])),
+            #            15, (0, 0, 255), -1)
             # cv2.circle(self.image,
             #            (int(self.x_in+real_distance_w), int(self.y_in+real_distance_h)),
             #            10, (0, 0, 255), -1)
@@ -290,7 +266,6 @@ class controller(Ui_MainWindow):
         else:
             self.wind_detected_in.setText("No Detected")
             self.wind_detected_in.setText("No Image")
-
         self.show_image_anypoint_draw()
 
     def show_image_anypoint_draw(self):
@@ -300,7 +275,7 @@ class controller(Ui_MainWindow):
         if self.image_click_plate is not None:
             MoilUtils.showImageToLabel(self.wind_detected_in_m, self.image_click_plate, 200)
 
-    def anypoint_zone_2(self):
+    def anypoint_outside(self):
         print("anypoint zone 2")
         # self.anypoint_out = self.image
         self.anypoint_out = MoilUtils.remap(self.image, self.maps_x_out, self.maps_y_out)
@@ -314,9 +289,6 @@ class controller(Ui_MainWindow):
         self.num_detect_out.setText(str(self.num_out))
         print(type(self.prediction_confidence))
 
-        # recognition
-        # self.plat_num = self.recognition.recognition_character(self.anypoint_out)
-        # self.num_detect_ori.setText(str(self.plat_num))
         self.prediction_out.setText(str(round(self.prediction_confidence * 100, 2)) + " %")
 
         if self.position_out is not None:
@@ -329,9 +301,9 @@ class controller(Ui_MainWindow):
             real_distance_h = self.height * center_position_obj[1] / self.anypoint_out.shape[0]
             cv2.circle(self.anypoint_out_draw, (int(center_position_obj[0]), int(center_position_obj[1])),
                        15, (255, 0, 255), -1)
-            cv2.circle(self.image,
-                       (int(self.center_fish[0][0]), int(self.center_fish[0][1])),
-                       15, (255, 0, 255), -1)
+            # cv2.circle(self.image,
+            #            (int(self.center_fish[0][0]), int(self.center_fish[0][1])),
+            #            15, (255, 0, 255), -1)
             # cv2.circle(self.image,
             #            (int(self.x_in+real_distance_w), int(self.y_in+real_distance_h)),
             #            63, (0, 0, 255), -1)
@@ -408,38 +380,19 @@ class controller(Ui_MainWindow):
         beta = self.val_beta_in.value()
         zoom = self.val_zoom_in.value()
 
-        if self.mode_1_in.isChecked():
-            mode = 1
-        elif self.mode_2_in.isChecked():
-            mode = 2
-        else:
-            mode = 1
-
-        self.maps_x_in, self.maps_y_in = self.moildev_in.maps_anypoint(alpha, beta, zoom, mode)
+        self.maps_x_in, self.maps_y_in = self.moildev_in.maps_anypoint(alpha, beta, zoom, mode=2)
         self.x_in, self.y_in, self.center_fish, self.width, self.height = self.CenterGravity(self.maps_x_in,
                                                                                              self.maps_y_in)
-        self.anypoint_zone_1()
-        if self.maps_x_in is not None and self.maps_x_out is not None:
-            self.show_image()
 
     def valueChange_outside(self):
         alpha = self.val_alpha_out.value()
         beta = self.val_beta_out.value()
         zoom = self.val_zoom_out.value()
 
-        if self.mode_1_out.isChecked():
-            mode = 1
-        elif self.mode_2_out.isChecked():
-            mode = 2
-        else:
-            mode = 1
 
-        self.maps_x_out, self.maps_y_out = self.moildev_out.maps_anypoint(alpha, beta, zoom, mode)
+        self.maps_x_out, self.maps_y_out = self.moildev_out.maps_anypoint(alpha, beta, zoom, mode=2)
         self.x_out, self.y_out, self.center_fish, self.width, self.height = self.CenterGravity(self.maps_x_out,
                                                                                                self.maps_y_out)
-        self.anypoint_zone_2()
-        if self.maps_x_in is not None and self.maps_x_out is not None:
-            self.show_image()
 
     def mouse_event_image_source(self, e):
         print("click even normal fisheye")
@@ -455,39 +408,27 @@ class controller(Ui_MainWindow):
 
                 if self.radioButton_inside.isChecked():
                     print("inside")
-                    if self.mode_1_in.isChecked():
-                        mode = 1
-                    elif self.mode_2_in.isChecked():
-                        mode = 2
-                    else:
-                        mode = 1
 
-                    alpha, beta = self.moildev_in.get_alpha_beta(icx_front, icy_front, mode)
+                    alpha, beta = self.moildev_in.get_alpha_beta(icx_front, icy_front, mode=2)
                     self.blockSignals()
                     self.val_alpha_in.setValue(alpha)
                     self.val_beta_in.setValue(beta)
                     self.unblockSignals()
                     self.valueChange_inside()
-                    self.anypoint_zone_1()
-                    self.anypoint_zone_2()
+                    self.anypoint_inside()
+                    self.anypoint_outside()
                     self.show_image()
                 if self.radioButton_outside.isChecked():
                     print("outside")
-                    if self.mode_1_out.isChecked():
-                        mode = 1
-                    elif self.mode_2_out.isChecked():
-                        mode = 2
-                    else:
-                        mode = 1
 
-                    alpha, beta = self.moildev_out.get_alpha_beta(icx_front, icy_front, mode)
+                    alpha, beta = self.moildev_out.get_alpha_beta(icx_front, icy_front, mode=2)
                     self.blockSignals()
                     self.val_alpha_out.setValue(alpha)
                     self.val_beta_out.setValue(beta)
                     self.unblockSignals()
                     self.valueChange_outside()
-                    self.anypoint_zone_1()
-                    self.anypoint_zone_2()
+                    self.anypoint_inside()
+                    self.anypoint_outside()
                     self.show_image()
 
         elif e.button() == Qt.MouseButton.RightButton:
@@ -534,95 +475,6 @@ class controller(Ui_MainWindow):
                     self.anypoint_in_draw = self.anypoint_in.copy()
 
                 self.show_image_anypoint_draw()
-
-    def mouse_event_image_anypoint_out(self, e):
-        print("click anypoint out")
-        if e.button() == Qt.MouseButton.LeftButton:
-            pos_x = round(e.position().x())
-            pos_y = round(e.position().y())
-            if self.image is None:
-                print("no image")
-            else:
-                ratio_x, ratio_y = MoilUtils.ratio_image_to_label(self.wind_outsid_image, self.anypoint_out_draw)
-                icx_front = round(pos_x * ratio_x)
-                icy_front = round(pos_y * ratio_y)
-                coor = [icx_front, icy_front]
-
-                if len(self.point_out) <= 4:
-                    self.point_out.append(coor)
-
-                for i, value in enumerate(self.point_out):
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    org = self.point_out[i]
-                    fontScale = 2
-                    color = (255, 0, 0)
-                    thickness = 5
-                    self.anypoint_out_draw = cv2.putText(self.anypoint_out_draw, str(i + 1), (org[0], org[1]), font,
-                                                        fontScale,
-                                                        color, thickness, cv2.LINE_AA)
-                    cv2.circle(self.anypoint_out_draw, (org[0], org[1]), 15, (0, 0, 255), -1)
-
-                if len(self.point_out) == 4:
-                    self.image_click_plate_zone2 = self.perspective_out(self.anypoint_out)
-                    cv2.imwrite("image_out.jpg", self.image_click_plate_zone2)
-
-                if len(self.point_out) > 4:
-                    self.point_out = []
-                    self.anypoint_out_draw = self.anypoint_out.copy()
-
-                self.show_image_anypoint_draw_out()
-
-    def perspective_in(self, image):
-        # define four points on input image
-        pts1 = np.float32(self.point_in)
-        print("ok, test click perspective")
-
-        # define the corresponding four points on output image
-        pts2 = np.float32([[0, 0], [200, 0], [0, 100], [200, 100]])
-
-        # get the perspective transform matrix
-        M = cv2.getPerspectiveTransform(pts1, pts2)
-
-        # transform the image using perspective transform matrix
-        return cv2.warpPerspective(image, M, (200, 100))
-
-    def perspective_out(self, image):
-        # define four points on input image
-        pts1 = np.float32(self.point_out)
-        print("ok, test click perspective")
-
-        # define the corresponding four points on output image
-        pts2 = np.float32([[0, 0], [200, 0], [0, 100], [200, 100]])
-
-        # get the perspective transform matrix
-        M = cv2.getPerspectiveTransform(pts1, pts2)
-
-        # transform the image using perspective transform matrix
-        return cv2.warpPerspective(image, M, (200, 100))
-
-    def rotate_value_in(self, image):
-        rotate = self.rotate_in.value()
-        height, width = image.shape[:2]
-        # get the center coordinates of the image to create the 2D rotation matrix
-        center = (width / 2, height / 2)
-
-        # using cv2.getRotationMatrix2D() to get the rotation matrix
-        rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
-
-        # rotate the image using cv2.warpAffine
-        return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
-
-    def rotate_value_out(self, image):
-        rotate = self.rotate_out.value()
-        height, width = image.shape[:2]
-        # get the center coordinates of the image to create the 2D rotation matrix
-        center = (width / 2, height / 2)
-
-        # using cv2.getRotationMatrix2D() to get the rotation matrix
-        rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
-
-        # rotate the image using cv2.warpAffine
-        return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
 
     def onclick_play_video(self):
         if self.image is not None:
