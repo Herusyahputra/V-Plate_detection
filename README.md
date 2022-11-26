@@ -1,7 +1,7 @@
 # The Vehicle Plate Detection Using Multi-views From a Single Fisheye Camera
 ========================================================================================
 
-## Introduction
+## Introduction - Version 1 Apllications
 
 This is an application for the implementation of vehicle plate detection experiments using multi views from a single fisheye camera. Which aims to provide a solution from the development of many cameras installed on the road to monitor vehicles. This application is one example of the development of moilutils-templates from Ming-chi Omnidirectional Imaging and Laboratory. 
 
@@ -23,7 +23,7 @@ To run this program, follow the step by step commands below:
 
   - *Open your teminal on ubuntu*
   
-    ```$ git clone https://github.com/Herusyahputra/V-Plate_detection.git```
+    ```$ git clone https://github.com/Herusyahputra/V-Plate_detection.git --branch=version-1```
   
   - Change directory.
   
@@ -51,7 +51,6 @@ if have some problem to installation, please contact herusyahputra55@gmail.com
 
 The following is the main view of the user interface design monitoring system that has been built, when you run this program.
 
-![Userinterface](https://user-images.githubusercontent.com/60929939/202978705-6617954f-8e4e-47a6-9bea-8aa5ffab806e.png)
 
 
 Good Luck......
