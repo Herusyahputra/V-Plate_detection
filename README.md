@@ -7,7 +7,7 @@ This is an application for the implementation of vehicle plate detection experim
 
 
 ## Attention
-To use the YoloV4 that has been trained, you can download the model provided at this link ["YoloV4 Model"](https://mcut-my.sharepoint.com/:f:/g/personal/m09158023_o365_mcut_edu_tw/EtHEDclopVtBq9Yspxe1t-UBGfTv-IjtpwMUD8B4b6YopQ?e=19bhOt) and Here also provide ["Documents Thesis"](https://mcut-my.sharepoint.com/:f:/g/personal/m09158023_o365_mcut_edu_tw/Ev-KvSo2jYtLt3DudTVmN7UB2GBZraF5CCQI_sOYKGym2g?e=hMzmqv).
+To use the YoloV4 that has been trained, you can download the model provided at this link ["YoloV4 Model"](https://mcut-my.sharepoint.com/:f:/g/personal/m09158023_o365_mcut_edu_tw/EtHEDclopVtBq9Yspxe1t-UBGfTv-IjtpwMUD8B4b6YopQ?e=19bhOt).
 
 ## Ref-Repository GitHub 
 
