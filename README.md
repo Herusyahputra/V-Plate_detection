@@ -3,7 +3,7 @@
 
 ## Introduction
 
-This is an application for the implementation of vehicle plate detection experiments using multi views from a single fisheye camera. Which aims to provide a solution from the development of many cameras installed on the road to monitor vehicles. This application is one example of the development of moilutils-templates from Ming-chi Omnidirectional Imaging and Laboratory. 
+This is an application for the implementation of vehicle plate detection experiments using multi views from a single fisheye camera. Which aims to provide a solution from the development of many cameras installed on the road to monitor vehicles. This application is one example of the development of moilutils-templates from Ming-chi Omnidirectional Imaging and Laboratory.. 
 
 
 ## Attention
