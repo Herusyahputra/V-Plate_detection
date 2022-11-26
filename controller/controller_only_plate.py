@@ -101,10 +101,12 @@ class controller(Ui_MainWindow):
         self.mode_1_out.toggled.connect(self.valueChange_outside)
         self.mode_2_out.toggled.connect(self.valueChange_outside)
 
-        # Setting parameters for create anypoint maps inside
+        # Setting parameters for create anypoint maps outside
         self.val_alpha_out.valueChanged.connect(self.valueChange_outside)
         self.val_beta_out.valueChanged.connect(self.valueChange_outside)
         self.val_zoom_out.valueChanged.connect(self.valueChange_outside)
+
+        self.rotate_ori.valueChanged.connect(self.normal_fisheye)
 
     def onclick_open_file(self):
         filename = MoilUtils.selectFile(self.parent, "Select Image", "./sample_image/",
@@ -210,6 +212,7 @@ class controller(Ui_MainWindow):
     def normal_fisheye(self):
         print("normal image")
         self.ori_fisheye = self.image
+        self.ori_fisheye = self.rotate_value_ori(self.ori_fisheye)
         cv2.imwrite("./images/normal_fisheye.jpg", self.ori_fisheye)
         self.anypoint_ori_draw, self.position_ori, self.prediction_confidence = self.yolo_config.detect_using_yolo(
             self.ori_fisheye)
@@ -234,7 +237,7 @@ class controller(Ui_MainWindow):
             #            (int(self.center_fish[0][0]), int(self.center_fish[0][1])),
             #            15, (0, 0, 255), -1)
 
-            self.createAlphaBeta(int(self.x_in + real_distance_w), int(self.y_in + real_distance_h))
+            # self.createAlphaBeta(int(self.x_in + real_distance_w), int(self.y_in + real_distance_h))
             MoilUtils.showImageToLabel(self.repository, frame_ori, 300)
 
         else:
@@ -391,7 +394,7 @@ class controller(Ui_MainWindow):
         image_draw = self.image.copy()
         image_draw = MoilUtils.drawPolygon(image_draw, self.maps_x_in, self.maps_y_in)
         image_draw = MoilUtils.drawPolygon(image_draw, self.maps_x_out, self.maps_y_out)
-        MoilUtils.showImageToLabel(self.original_fisheye, image_draw, 600)
+        # MoilUtils.showImageToLabel(self.original_fisheye, image_draw, 600)
 
     def save_image_inside(self):
         curr_datetime = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
@@ -602,6 +605,18 @@ class controller(Ui_MainWindow):
         # transform the image using perspective transform matrix
         return cv2.warpPerspective(image, M, (200, 100))
 
+    def rotate_value_ori(self, image):
+        rotate = self.rotate_ori.value()
+        height, width = image.shape[:2]
+        # get the center coordinates of the image to create the 2D rotation matrix
+        center = (width / 2, height / 2)
+
+        # using cv2.getRotationMatrix2D() to get the rotation matrix
+        rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
+
+        # rotate the image using cv2.warpAffine
+        return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
+
     # start aji guide source-code
     def rotate_value_in(self, image):
         rotate = self.rotate_in.value()
@@ -675,6 +690,7 @@ class controller(Ui_MainWindow):
         self.next_frame()
 
     def blockSignals(self):
+        self.rotate_ori.blockSignals(True)
         self.val_alpha_in.blockSignals(True)
         self.val_beta_in.blockSignals(True)
         self.val_zoom_in.blockSignals(True)
@@ -685,6 +701,7 @@ class controller(Ui_MainWindow):
         self.rotate_out.blockSignals(True)
 
     def unblockSignals(self):
+        self.rotate_ori.blockSignals(False)
         self.val_alpha_in.blockSignals(False)
         self.val_beta_in.blockSignals(False)
         self.val_zoom_in.blockSignals(False)
@@ -693,3 +710,4 @@ class controller(Ui_MainWindow):
         self.val_beta_out.blockSignals(False)
         self.val_zoom_out.blockSignals(False)
         self.rotate_out.blockSignals(False)
+
