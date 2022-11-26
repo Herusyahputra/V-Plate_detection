@@ -20,8 +20,8 @@ class_colors = np.array(class_colors)
 # 4th: tile this to get 80 class colors, i.e. as many as the classes  (16rows of 5cols each).
 # If you want unique colors for each class you may randomize the color generation
 # or set them manually
-class_colors = np.tile(class_colors, (16, 5))
-class_colors = np.random.randint(0, 255, size=(len(class_labels), 5), dtype="uint8")
+class_colors = np.tile(class_colors, (16, 1))
+class_colors = np.random.randint(0, 255, size=(len(class_labels), 3), dtype="uint8")
 
 # for the image2blob conversion
 scalefactor = 1.0 / 255.0
