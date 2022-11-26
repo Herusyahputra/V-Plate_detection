@@ -1,0 +1,17 @@
+{
+  "cameraName": "pyspin_4000x3000",
+  "cameraSensorWidth": 1.4,
+  "cameraSensorHeight": 1.4,
+  "iCx": 2029,
+  "iCy": 1528,
+  "ratio": 1,
+  "imageWidth": 4000,
+  "imageHeight": 3000,
+  "calibrationRatio": 1,
+  "parameter0": 0,
+  "parameter1": 0,
+  "parameter2": 10.518,
+  "parameter3": -47.917,
+  "parameter4": 63.02,
+  "parameter5": 698.457
+}
