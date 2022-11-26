@@ -40,8 +40,6 @@ To run this program, follow the step by step commands below:
   - Installation requirements
   
     ``` $ pip install -r requirements.txt```
-    
-if have some problem to installation, please contact herusyahputra55@gmail.com
   
   - Running programm
   
