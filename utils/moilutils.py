@@ -6,7 +6,7 @@ import numpy as np
 import datetime
 import math
 import json
-from .Moildev import Moildev
+from Moildev import Moildev
 from .exif_lib import MetaImage
 from .camera_source import CameraSource
 from .camera_parameter import CameraParameters
@@ -14,7 +14,6 @@ from .camera_parameter import CameraParameters
 
 class MoilUtils(object):
     __camera_params = "utils/camera_parameters.json"
-    # __camera_params = "/home/moil-dev002/Documents/Plate_detection/utils/camera_parameters.json"
     __camera_type = None
 
     def __init__(self):
@@ -117,9 +116,10 @@ class MoilUtils(object):
         return:
             file_path: location
         """
-        options = QtWidgets.QFileDialog
+        options = QtWidgets.QFileDialog.DontUseNativeDialog
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(parent, title, dir_path,
-                                                             file_filter)
+                                                             file_filter,
+                                                             options=options)
         return file_path
 
     @classmethod
@@ -379,9 +379,8 @@ class MoilUtils(object):
         Returns:
 
         """
-        print(cls.__camera_params)
         if type_camera:
-            moildev = Moildev.Moildev(cls.__camera_params, type_camera)
+            moildev = Moildev(cls.__camera_params, type_camera)
 
         else:
             QtWidgets.QMessageBox.warning(
