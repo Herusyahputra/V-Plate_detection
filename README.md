@@ -49,7 +49,7 @@ To run this program, follow the step by step commands below:
 
 The following is the main view of the user interface design monitoring system that has been built, when you run this program.
 
-
+![version-1](https://user-images.githubusercontent.com/60929939/204454337-978e041c-3300-41a2-a0d1-599b15959ccb.png)
 
 Good Luck......
 
