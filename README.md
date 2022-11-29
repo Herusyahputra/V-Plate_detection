@@ -53,7 +53,7 @@ if have some problem to installation, please contact herusyahputra55@gmail.com
 
 The following is the main view of the user interface design monitoring system that has been built, when you run this program.
 
-![Userinterface](https://user-images.githubusercontent.com/60929939/202978705-6617954f-8e4e-47a6-9bea-8aa5ffab806e.png)
+![version-2](https://user-images.githubusercontent.com/60929939/204454578-ba8e798f-6e99-4bdc-8430-99b50df29595.png)
 
 
 Good Luck......
