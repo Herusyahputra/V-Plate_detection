@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from model.object_detection_functions import object_detection_analysis_with_nms
 
-
+# Start borrow algorithm from reposirtory GitHub
 class Yolo_config(object):
     def __init__(self, parent):
         super(Yolo_config, self).__init__()
@@ -51,3 +51,5 @@ class Yolo_config(object):
             winner_boxes = None
 
         return frame, winner_boxes, predicted_class_label
+
+# End algorithm
