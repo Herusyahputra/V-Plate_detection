@@ -17,7 +17,7 @@ from model.perspective_images import Perspective
 from model.recognition import Recognition
 from model.data_properties import DataProperties
 
-
+# Start from Anto teach style
 class controller(Ui_MainWindow):
     def __init__(self, MainWindow):
         super(Ui_MainWindow, self).__init__()
@@ -108,6 +108,8 @@ class controller(Ui_MainWindow):
 
         self.rotate_ori.valueChanged.connect(self.normal_fisheye)
 
+
+    # Start from MoilUtils-Template
     def onclick_open_file(self):
         filename = MoilUtils.selectFile(self.parent, "Select Image", "./sample_image/",
                                         "Image Files (*.jpeg *.jpg *.png *.gif *.bmg)")
@@ -153,7 +155,7 @@ class controller(Ui_MainWindow):
                 seconds = end - start
                 print("time:{}".format(seconds))
 
-        # start anto guide source-code
+        # start Anto guide source-code
         else:
             start = time.time()
             self.timer.start()
@@ -163,6 +165,7 @@ class controller(Ui_MainWindow):
             seconds = end - start
             print("image mode, time:{}".format(seconds))
 
+        # end Anto guide source-code
 
     def get_value_slider_video(self, value):
         current_position = self.data_properties.properties_video["pos_frame"] * (value + 1) / \
@@ -191,6 +194,7 @@ class controller(Ui_MainWindow):
                 self.anypoint_zone_1()
                 self.anypoint_zone_2()
                 self.show_image()
+    # End from MoilUtils-Template
 
     def save_to_record(self):
         ret, image = self.video.read()
@@ -245,6 +249,7 @@ class controller(Ui_MainWindow):
 
         MoilUtils.showImageToLabel(self.original_fisheye, self.anypoint_ori_draw, 600)
 
+    # Start from Moildev-SDK
     def anypoint_zone_1(self):
         print("anypoint zone 1")
         # self.anypoint_in = self.image
@@ -349,6 +354,7 @@ class controller(Ui_MainWindow):
             self.wind_detected_out.setText("No Image")
 
         self.show_image_anypoint_draw_out()
+    # End Moildev-SDK
 
     def show_image_anypoint_draw_out(self):
         MoilUtils.showImageToLabel(self.wind_outsid_image, self.anypoint_out_draw, 600)
@@ -445,6 +451,7 @@ class controller(Ui_MainWindow):
         if self.maps_x_in is not None and self.maps_x_out is not None:
             self.show_image()
 
+    # Start from moilapps
     def mouse_event_image_source(self, e):
         print("click even normal fisheye")
         if e.button() == Qt.MouseButton.LeftButton:
@@ -576,71 +583,44 @@ class controller(Ui_MainWindow):
 
                 self.show_image_anypoint_draw_out()
 
-    # start aji guide source-code
+    # End from moilapps
+
+    # Start aji guide source-code
     def perspective_in(self, image):
-        # define four points on input image
         pts1 = np.float32(self.point_in)
-        print("ok, test click perspective")
-
-        # define the corresponding four points on output image
         pts2 = np.float32([[0, 0], [200, 0], [0, 100], [200, 100]])
-
-        # get the perspective transform matrix
         M = cv2.getPerspectiveTransform(pts1, pts2)
-
-        # transform the image using perspective transform matrix
         return cv2.warpPerspective(image, M, (200, 100))
 
     def perspective_out(self, image):
-        # define four points on input image
         pts1 = np.float32(self.point_out)
-        print("ok, test click perspective")
-
-        # define the corresponding four points on output image
         pts2 = np.float32([[0, 0], [200, 0], [0, 100], [200, 100]])
-
-        # get the perspective transform matrix
         M = cv2.getPerspectiveTransform(pts1, pts2)
-
-        # transform the image using perspective transform matrix
         return cv2.warpPerspective(image, M, (200, 100))
 
     def rotate_value_ori(self, image):
         rotate = self.rotate_ori.value()
         height, width = image.shape[:2]
-        # get the center coordinates of the image to create the 2D rotation matrix
         center = (width / 2, height / 2)
-
-        # using cv2.getRotationMatrix2D() to get the rotation matrix
         rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
 
-        # rotate the image using cv2.warpAffine
         return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
 
-    # start aji guide source-code
     def rotate_value_in(self, image):
         rotate = self.rotate_in.value()
         height, width = image.shape[:2]
-        # get the center coordinates of the image to create the 2D rotation matrix
         center = (width / 2, height / 2)
-
-        # using cv2.getRotationMatrix2D() to get the rotation matrix
         rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
-
-        # rotate the image using cv2.warpAffine
         return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
 
     def rotate_value_out(self, image):
         rotate = self.rotate_out.value()
         height, width = image.shape[:2]
-        # get the center coordinates of the image to create the 2D rotation matrix
         center = (width / 2, height / 2)
-
-        # using cv2.getRotationMatrix2D() to get the rotation matrix
         rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
-
-        # rotate the image using cv2.warpAffine
         return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
+
+    # End aji guide source-code
 
     def onclick_play_video(self):
         if self.image is not None:
