@@ -108,9 +108,11 @@ class controller(Ui_MainWindow):
 
         self.rotate_ori.valueChanged.connect(self.normal_fisheye)
 
-
     # Start from MoilUtils-Template
     def onclick_open_file(self):
+        """
+        This function is useful when the user opens an image file that will be processed, a file format like, (*.jpeg *.jpg *.png *.gif *.bmg)
+        """
         filename = MoilUtils.selectFile(self.parent, "Select Image", "./sample_image/",
                                         "Image Files (*.jpeg *.jpg *.png *.gif *.bmg)")
 
@@ -126,6 +128,9 @@ class controller(Ui_MainWindow):
         self.show_image()
 
     def onclick_open_video(self):
+        """
+        This function is useful when the user opens an video file that will be processed, a file format like, (*.mp4 *.avi *.mpg *.gif *.mov)
+        """
         video_source = MoilUtils.selectFile(self.parent,
                                             "Select Video Files",
                                             "../",
@@ -140,6 +145,9 @@ class controller(Ui_MainWindow):
         self.next_frame()
 
     def next_frame(self):
+        """This function will be executed when the user runs a video associated with several functions for processing
+        images and videos with endless loops
+        """
         self.data_properties.properties_video["video"] = True
         if self.video:
             success, self.image = self.video.read()
@@ -168,11 +176,18 @@ class controller(Ui_MainWindow):
         # end Anto guide source-code
 
     def get_value_slider_video(self, value):
+        """
+        This function is useful for viewing the time when running a video on the application
+        """
         current_position = self.data_properties.properties_video["pos_frame"] * (value + 1) / \
                            self.data_properties.properties_video["frame_count"]
         return current_position
 
     def onclick_open_camera(self):
+        """
+        This function will open the camera with the ip link camera used, when the user will stream with
+        real time video when the application process is running
+        """
         print("test streaming")
         camera_link = "http://10.42.0.170:8000/stream.mjpg"
         self.video = cv2.VideoCapture(camera_link)
@@ -185,6 +200,9 @@ class controller(Ui_MainWindow):
         self.next_frame()
 
     def next_frame_streaming(self):
+        """
+        This function will be used for live-streaming and calling some functions to process images
+        """
         if self.video:
             success, self.image = self.video.read()
             if success:
@@ -197,6 +215,10 @@ class controller(Ui_MainWindow):
     # End from MoilUtils-Template
 
     def save_to_record(self):
+        """
+        This function will be used when the user clicks the recording button to record images in video form
+        format *.avi
+        """
         ret, image = self.video.read()
         h, w, z = image.shape
 
@@ -214,6 +236,10 @@ class controller(Ui_MainWindow):
                     out[0].write(frame)
 
     def normal_fisheye(self):
+        """
+        This function will be useful for processing original images, by detecting objects in images using
+        Yolo algorithm which will be displayed in the user interface
+        """
         print("normal image")
         self.ori_fisheye = self.image
         self.ori_fisheye = self.rotate_value_ori(self.ori_fisheye)
@@ -251,6 +277,10 @@ class controller(Ui_MainWindow):
 
     # Start from Moildev-SDK
     def anypoint_zone_1(self):
+        """
+        This function will be used to create a new Anypoint in Zone 1 from the original image which can detect
+        objects automatically using the Yolo algorithm and perspective transform as a manual method
+        """
         print("anypoint zone 1")
         # self.anypoint_in = self.image
         self.anypoint_in = MoilUtils.remap(self.image, self.maps_x_in, self.maps_y_in)
@@ -302,6 +332,9 @@ class controller(Ui_MainWindow):
         self.show_image_anypoint_draw()
 
     def show_image_anypoint_draw(self):
+        """
+        This function will be used to display the result of creating a new Anypoint in Zone 1
+        """
         # if self.position_in is not None:
         # MoilUtils.showImageToLabel(self.original_fisheye, self.anypoint_in_draw, 600)
         MoilUtils.showImageToLabel(self.wind_inside_image, self.anypoint_in_draw, 600)
@@ -309,6 +342,10 @@ class controller(Ui_MainWindow):
             MoilUtils.showImageToLabel(self.wind_detected_in_m, self.image_click_plate, 200)
 
     def anypoint_zone_2(self):
+        """
+        This function will be used to create a new Anypoint in Zone 2 from the original image which can detect
+        objects automatically using the Yolo algorithm and perspective transform as a manual method
+        """
         print("anypoint zone 2")
         # self.anypoint_out = self.image
         self.anypoint_out = MoilUtils.remap(self.image, self.maps_x_out, self.maps_y_out)
@@ -357,11 +394,17 @@ class controller(Ui_MainWindow):
     # End Moildev-SDK
 
     def show_image_anypoint_draw_out(self):
+        """
+        This function will be used to display the result of creating a new Anypoint in Zone 2
+        """
         MoilUtils.showImageToLabel(self.wind_outsid_image, self.anypoint_out_draw, 600)
         if self.image_click_plate_zone2 is not None:
             MoilUtils.showImageToLabel(self.wind_detected_out_m, self.image_click_plate_zone2, 200)
 
     def createAlphaBeta(self, x, y):
+        """
+        This function is useful for making alpha, beta in images on zone 1
+        """
         alpha, beta, = self.moildev_in.get_alpha_beta(x, y, mode=2)
         mapsx, mapsy = self.moildev_in.maps_anypoint(alpha, beta, zoom=20, mode=2)
         anypoint = MoilUtils.remap(self.image, mapsx, mapsy)
@@ -369,6 +412,9 @@ class controller(Ui_MainWindow):
         return anypoint
 
     def createAlphaBeta_out(self, x, y):
+        """
+        This function is useful for making alpha, beta in images on zone 2
+        """
         alpha, beta = self.moildev_out.get_alpha_beta(x, y, mode=2)
         mapsx, mapsy = self.moildev_out.maps_anypoint(alpha, beta, zoom=20, mode=2)
         anypoint_out = MoilUtils.remap(self.image, mapsx, mapsy)
@@ -377,6 +423,9 @@ class controller(Ui_MainWindow):
 
     @classmethod
     def CenterGravity(cls, maps_x, maps_y):
+        """
+        This function will be used to create the midpoint of map_X and maps_Y in the original image
+        """
         a = [maps_x[0][0], maps_y[0][0]]
         b = [maps_x[0][-1], maps_y[0][-1]]
         c = [maps_x[-1][-1], maps_y[-1][-1]]
@@ -393,26 +442,43 @@ class controller(Ui_MainWindow):
 
     @classmethod
     def crop_image_detected(cls, frame, box):
+        """
+        This function is used to crop plate images, when the program detects plates automatically and
+        displayed as the result of the detection plate
+        """
         frame2 = frame[box[0][1]:box[0][1] + box[0][3], box[0][0]:box[0][0] + box[0][2]]
         return frame2
 
     def show_image(self):
+        """
+        This function will be used to outline the polygons in the original image
+        """
         image_draw = self.image.copy()
         image_draw = MoilUtils.drawPolygon(image_draw, self.maps_x_in, self.maps_y_in)
         image_draw = MoilUtils.drawPolygon(image_draw, self.maps_x_out, self.maps_y_out)
         # MoilUtils.showImageToLabel(self.original_fisheye, image_draw, 600)
 
     def save_image_inside(self):
+        """
+        This function will be used when saving Anypoint images in Zone 1
+        """
         curr_datetime = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
         cv2.imwrite("./images/anypoint_inside/img_in_" + curr_datetime + ".jpg", self.anypoint_in)
         print("save image inside")
 
     def save_image_outside(self):
+        """
+        This function will be used when saving Anypoint images in Zone 2
+        """
         curr_datetime = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
         cv2.imwrite("./images/anypoint_outside/img_out_" + curr_datetime + ".jpg", self.anypoint_out)
         print("save image outside")
 
     def valueChange_inside(self):
+        """
+        This function will be used when the user will configure the settings to get the results from
+        picture on Zone 1 with direct control
+        """
         alpha = self.val_alpha_in.value()
         beta = self.val_beta_in.value()
         zoom = self.val_zoom_in.value()
@@ -432,6 +498,10 @@ class controller(Ui_MainWindow):
             self.show_image()
 
     def valueChange_outside(self):
+        """
+        This function will be used when the user will configure the settings to get the results from
+        picture on Zone 2 with direct control
+        """
         alpha = self.val_alpha_out.value()
         beta = self.val_beta_out.value()
         zoom = self.val_zoom_out.value()
@@ -453,6 +523,10 @@ class controller(Ui_MainWindow):
 
     # Start from moilapps
     def mouse_event_image_source(self, e):
+        """
+        This function will be used when the user will click on the image to get the pixels to be seen and show on
+        Zone 1 and Zone 2
+        """
         print("click even normal fisheye")
         if e.button() == Qt.MouseButton.LeftButton:
             pos_x = round(e.position().x())
@@ -511,6 +585,9 @@ class controller(Ui_MainWindow):
                 menu.exec(e.globalPos())
 
     def mouse_event_image_anypoint(self, e):
+        """
+        This function will be used for perspective transform by doing 4-points on objects in Zone 1
+        """
         print("click anypoint in")
         if e.button() == Qt.MouseButton.LeftButton:
             pos_x = round(e.position().x())
@@ -547,6 +624,9 @@ class controller(Ui_MainWindow):
                 self.show_image_anypoint_draw()
 
     def mouse_event_image_anypoint_out(self, e):
+        """
+        This function will be used for perspective transform by doing 4-points on objects in Zone 2
+        """
         print("click anypoint out")
         if e.button() == Qt.MouseButton.LeftButton:
             pos_x = round(e.position().x())
@@ -582,31 +662,41 @@ class controller(Ui_MainWindow):
                     self.anypoint_out_draw = self.anypoint_out.copy()
 
                 self.show_image_anypoint_draw_out()
-
     # End from moilapps
 
     # Start aji guide source-code
     def perspective_in(self, image):
+        """
+        This function is to create a perspective transform in zone 1
+        """
         pts1 = np.float32(self.point_in)
         pts2 = np.float32([[0, 0], [200, 0], [0, 100], [200, 100]])
         M = cv2.getPerspectiveTransform(pts1, pts2)
         return cv2.warpPerspective(image, M, (200, 100))
 
     def perspective_out(self, image):
+        """
+        This function is to create a perspective transform in zone 2
+        """
         pts1 = np.float32(self.point_out)
         pts2 = np.float32([[0, 0], [200, 0], [0, 100], [200, 100]])
         M = cv2.getPerspectiveTransform(pts1, pts2)
         return cv2.warpPerspective(image, M, (200, 100))
 
     def rotate_value_ori(self, image):
+        """
+        This function will be used when rotating the image in Normal Fisheye
+        """
         rotate = self.rotate_ori.value()
         height, width = image.shape[:2]
         center = (width / 2, height / 2)
         rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
-
         return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
 
     def rotate_value_in(self, image):
+        """
+        This function will be used when rotating the image in Zone 1
+        """
         rotate = self.rotate_in.value()
         height, width = image.shape[:2]
         center = (width / 2, height / 2)
@@ -614,15 +704,19 @@ class controller(Ui_MainWindow):
         return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
 
     def rotate_value_out(self, image):
+        """
+        This function will be used when rotating the image in Zone 2
+        """
         rotate = self.rotate_out.value()
         height, width = image.shape[:2]
         center = (width / 2, height / 2)
         rotate_matrix = cv2.getRotationMatrix2D(center=center, angle=rotate, scale=1)
         return cv2.warpAffine(src=image, M=rotate_matrix, dsize=(width, height))
 
-    # End aji guide source-code
-
     def onclick_play_video(self):
+        """
+        This function will be used to play the video by clicking the play button on the user interface
+        """
         if self.image is not None:
             if self.btn_play_pouse_3.isChecked():
                 self.timer.start()
@@ -630,46 +724,73 @@ class controller(Ui_MainWindow):
                 self.timer.stop()
 
     def onclick_prev_video(self):
+        """
+        This function will be used to previous the video by clicking the previous button on the user interface
+        """
         self.btn_prev_video_3.setChecked(False)
         self.rewind_video()
         self.timer.stop()
 
     def onclick_stop_video(self):
+        """
+        This function will be used to stop the video by clicking the stop button on the user interface
+        """
         self.btn_play_pouse_3.setChecked(False)
         self.stop_video()
         self.timer.stop()
 
     def onclick_skip_video(self):
+        """
+        This function will be used to skip the video by clicking the skip button on the user interface
+        """
         self.btn_skip_video_3.setChecked(False)
         self.forward_video()
         self.timer.stop()
 
     def rewind_video(self):
+        """
+        This function will be used to rewind the video by clicking the rewind button on the user interface
+        """
         fps = self.video.get(cv2.CAP_PROP_FPS)
         position = self.data_properties.properties_video["pos_frame"] - 5 * fps
         self.video.set(cv2.CAP_PROP_POS_FRAMES, position)
         self.next_frame()
 
     def stop_video(self):
+        """
+        This function will be used to stop the video by clicking the stop button on the user interface
+        """
         self.video.set(cv2.CAP_PROP_POS_FRAMES, 0)
         self.next_frame()
 
     def forward_video(self):
+        """
+        This function will be used to forward the video by clicking the forward button on the user interface
+        """
         fps = self.video.get(cv2.CAP_PROP_FPS)
         position = self.data_properties.properties_video["pos_frame"] + 5 * fps
         self.video.set(cv2.CAP_PROP_POS_FRAMES, position)
         self.next_frame()
 
     def onclick_slider_video(self, value):
+        """
+        This function will be used to clicked the slider on the user interface
+        """
         value_max = self.slider_Video_3.maximum()
         self.slider_controller(value, value_max)
 
     def slider_controller(self, value, slider_maximum):
+        """
+        This function will be used to control the slider on the user interface
+        """
         dst = self.data_properties.properties_video["frame_count"] * value / slider_maximum
         self.video.set(cv2.CAP_PROP_POS_FRAMES, dst)
         self.next_frame()
 
     def blockSignals(self):
+        """
+        This function will be used to grant True access to the setting configuration
+        """
         self.rotate_ori.blockSignals(True)
         self.val_alpha_in.blockSignals(True)
         self.val_beta_in.blockSignals(True)
@@ -681,6 +802,9 @@ class controller(Ui_MainWindow):
         self.rotate_out.blockSignals(True)
 
     def unblockSignals(self):
+        """
+        This function will be used to grant False access to the setting configuration
+        """
         self.rotate_ori.blockSignals(False)
         self.val_alpha_in.blockSignals(False)
         self.val_beta_in.blockSignals(False)
