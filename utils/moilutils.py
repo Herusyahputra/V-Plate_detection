@@ -6,7 +6,7 @@ import numpy as np
 import datetime
 import math
 import json
-from .Moildev import Moildev
+from Moildev import Moildev
 from .exif_lib import MetaImage
 from .camera_source import CameraSource
 from .camera_parameter import CameraParameters
@@ -381,7 +381,8 @@ class MoilUtils(object):
         """
         print(cls.__camera_params)
         if type_camera:
-            moildev = Moildev.Moildev(cls.__camera_params, type_camera)
+            print("type canera")
+            moildev = Moildev(cls.__camera_params, type_camera)
 
         else:
             QtWidgets.QMessageBox.warning(
