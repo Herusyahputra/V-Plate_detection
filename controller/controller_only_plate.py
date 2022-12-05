@@ -115,10 +115,11 @@ class controller(Ui_MainWindow):
         """
         filename = MoilUtils.selectFile(self.parent, "Select Image", "./sample_image/",
                                         "Image Files (*.jpeg *.jpg *.png *.gif *.bmg)")
-
+        print("ok")
         self.moildev_in = MoilUtils.connectToMoildev("entaniya")
         self.moildev_out = MoilUtils.connectToMoildev("entaniya")
         self.image = MoilUtils.readImage(filename)
+        # print(self.moildev_in.getIcx())
         self.valueChange_inside()
         self.valueChange_outside()
         self.normal_fisheye()
@@ -405,8 +406,8 @@ class controller(Ui_MainWindow):
         """
         This function is useful for making alpha, beta in images on zone 1
         """
-        alpha, beta, = self.moildev_in.get_alpha_beta(x, y, mode=2)
-        mapsx, mapsy = self.moildev_in.maps_anypoint(alpha, beta, zoom=20, mode=2)
+        alpha, beta, = self.moildev_in.getAlphaBeta(x, y, mode=2)
+        mapsx, mapsy = self.moildev_in.getAnypointMaps(alpha, beta, zoom=20, mode=2)
         anypoint = MoilUtils.remap(self.image, mapsx, mapsy)
         MoilUtils.showImageToLabel(self.wind_detected_in, anypoint, 200)
         return anypoint
@@ -415,8 +416,8 @@ class controller(Ui_MainWindow):
         """
         This function is useful for making alpha, beta in images on zone 2
         """
-        alpha, beta = self.moildev_out.get_alpha_beta(x, y, mode=2)
-        mapsx, mapsy = self.moildev_out.maps_anypoint(alpha, beta, zoom=20, mode=2)
+        alpha, beta = self.moildev_out.getAlphaBeta(x, y, mode=2)
+        mapsx, mapsy = self.moildev_out.getAnypointMaps(alpha, beta, zoom=20, mode=2)
         anypoint_out = MoilUtils.remap(self.image, mapsx, mapsy)
         MoilUtils.showImageToLabel(self.wind_detected_out, anypoint_out, 200)
         return anypoint_out
@@ -490,7 +491,7 @@ class controller(Ui_MainWindow):
         else:
             mode = 1
 
-        self.maps_x_in, self.maps_y_in = self.moildev_in.maps_anypoint(alpha, beta, zoom, mode)
+        self.maps_x_in, self.maps_y_in = self.moildev_in.getAnypointMaps(alpha, beta, zoom, mode)
         self.x_in, self.y_in, self.center_fish, self.width, self.height = self.CenterGravity(self.maps_x_in,
                                                                                              self.maps_y_in)
         self.anypoint_zone_1()
@@ -513,7 +514,7 @@ class controller(Ui_MainWindow):
         else:
             mode = 1
 
-        self.maps_x_out, self.maps_y_out = self.moildev_out.maps_anypoint(alpha, beta, zoom, mode)
+        self.maps_x_out, self.maps_y_out = self.moildev_out.getAnypointMaps(alpha, beta, zoom, mode)
         self.x_out, self.y_out, self.center_fish, self.width, self.height = self.CenterGravity(self.maps_x_out,
                                                                                                self.maps_y_out)
 
