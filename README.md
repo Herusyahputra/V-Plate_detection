@@ -26,7 +26,7 @@ To run this program, follow the step by step commands below:
 
   - *Open your teminal on ubuntu*
   
-    ```$ git clone https://github.com/Herusyahputra/V-Plate_detection.git```
+    ```$ git clone https://github.com/Herusyahputra/V-Plate_detection.git --branch=V-windows ```
   
   - Change directory.
   
@@ -34,11 +34,11 @@ To run this program, follow the step by step commands below:
   
   - Create virtual environment
 
-    ``` $ python3.9 -m venv python-3.9```
-  
-  - Change directory virtual environment
-  
-    ``` $ source python3.9/bin/activate```
+    ``` $ pip install virtualenv```
+    
+    ``` $ virtualenv env```
+    
+    ``` $ .\env\Scripts\activate```
     
   - Installation requirements
   
